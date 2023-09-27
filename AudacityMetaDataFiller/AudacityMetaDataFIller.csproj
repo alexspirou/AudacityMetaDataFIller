@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Generic\**" />
+    <EmbeddedResource Remove="Generic\**" />
+    <None Remove="Generic\**" />
+    <Page Remove="Generic\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="appIcon.ico" />
   </ItemGroup>
 
@@ -22,10 +29,6 @@
     <None Update="FodyWeavers.xml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Generic\" />
   </ItemGroup>
 
 </Project>

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -125,47 +126,56 @@ public class TrackDetailsViewModel : ViewModelBase
     }
     public ICommand SaveValuesCommand { get; set; }
     private void SaveValuesCommandClick()
-    {        
-        string strCmdText;
-
-        string ArtistNameTrimmed = ArtistName.Replace("&", "and").Replace(" ", "-");
-        string SelectedTrackTrimmed = SelectedTrack.Replace("&", "and").Replace(" ", "-");
-        string AlbumTitleTrimmed = AlbumTitle.Replace("&", "and").Replace(" ", "-");
-        string GenreTrimmed = Genre.Replace("&", "and").Replace(" ", "-");
-        string CommentsTrimmed = Comments.Replace("&", "and").Replace(" ", "-");
-
-        string args = string.Format(@" {0} {1} {2} {3} {4} {5} {6}", ArtistNameTrimmed, SelectedTrackTrimmed, AlbumTitleTrimmed, TrackNumber, Year.ToString(), GenreTrimmed, CommentsTrimmed);
-        //string args = string.Format(@" {0} {1} {2} {3} {4} {5} {6}", "ena", "duo", "tria", "tessera", "pente", "eksi", "efta");
-        strCmdText = $@"/C cd C:\Users\alexs\source\repos\PythonAutoClick\PythonAutoClick && python Debug.py";
-
-        System.Diagnostics.Process.Start("CMD.exe", strCmdText + args);
-        var cancellationToken = cts.Token;
-
-        var pythonSrcTask = Task.Factory.StartNew(() =>
+    {   
+        try
         {
-            if (!_localSocket.IsConnected)
+            string strCmdText;
+
+            string ArtistNameTrimmed = ArtistName.Replace("&", "and").Replace(" ", "-");
+            string SelectedTrackTrimmed = SelectedTrack.Replace("&", "and").Replace(" ", "-");
+            string AlbumTitleTrimmed = AlbumTitle.Replace("&", "and").Replace(" ", "-");
+            string GenreTrimmed = Genre.Replace("&", "and").Replace(" ", "-");
+            string CommentsTrimmed = Comments.Replace("&", "and").Replace(" ", "-");
+
+            string args = string.Format(@" {0} {1} {2} {3} {4} {5} {6}", ArtistNameTrimmed, SelectedTrackTrimmed, AlbumTitleTrimmed, TrackNumber, Year.ToString(), GenreTrimmed, CommentsTrimmed);
+            //string args = string.Format(@" {0} {1} {2} {3} {4} {5} {6}", "ena", "duo", "tria", "tessera", "pente", "eksi", "efta");
+            strCmdText = $@"/C cd C:\Users\alexs\source\repos\AudacityMetaDataFIller\PythonAutoClick\PythonAutoClick && python Debug.py";
+
+            System.Diagnostics.Process.Start("CMD.exe", strCmdText + args);
+            var cancellationToken = cts.Token;
+
+            var pythonSrcTask = Task.Factory.StartNew(() =>
             {
-                _localSocket.Connect();
-            }
-            Thread.Sleep(3000);
-            while(_localSocket.IsConnected)
-            {
-                var recievedData = _localSocket.ReceiveData();
-                if(recievedData.Equals("Hello5"))
+                if (!_localSocket.IsConnected)
                 {
-                    break;
+                    _localSocket.Connect();
                 }
-            }
-        }, cancellationToken);
+                Thread.Sleep(3000);
+                while (_localSocket.IsConnected)
+                {
+                    var recievedData = _localSocket.ReceiveData();
+                    if (recievedData.Equals("Hello5"))
+                    {
+                        break;
+                    }
+                }
+            }, cancellationToken);
 
-        var waitToDisconnectTask = Task.Factory.StartNew(() =>
-        {
-            while(!pythonSrcTask.IsCompleted)
+            var waitToDisconnectTask = Task.Factory.StartNew(() =>
             {
-                // Do nothing
-            }
-            cts.Cancel();
-        });
+                while (!pythonSrcTask.IsCompleted)
+                {
+                    // Do nothing
+                }
+                cts.Cancel();
+            });
+        }
+        catch(Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
 
     }
 

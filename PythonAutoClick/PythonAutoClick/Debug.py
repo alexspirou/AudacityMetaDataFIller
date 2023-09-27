@@ -26,12 +26,17 @@ def RunProcess():
            counter +=1
 
         FindAndClick(r"Media\minimize.PNG",retries=0,timeoutSec=10, conf =0.8, delay=0.1)
+        FindAndClick(r"Media\audacityLogo.PNG",retries=0,timeoutSec=10, conf =0.8,delay=0.1)
         FindAndClick(r"Media\audacityAppOpen.PNG",retries=0,timeoutSec=10, conf =0.8,delay=0.1)
         sleep(2)
-        pyautogui.hotkey('ctrl', 'shift', 'E')
+        
+        FindAndClick(r"Media\file.PNG",retries=0,timeoutSec=10, conf =0.8,delay=0.1)
+        FindAndClick(r"Media\export.PNG",retries=0,timeoutSec=10, conf =0.8,delay=0.1)
+        FindAndClick(r"Media\exportSelectedAudio.PNG",retries=0,timeoutSec=10, conf =0.8,delay=0.1)
 
-        #FindAndClick(r"Media\wavMicrosoft.PNG",retries=1,timeoutSec=10, conf=0.7, delay=0.1)
-        #FindAndClick(r"Media\mp3Files.PNG",retries=1,timeoutSec=10, conf=0.7, delay=0.1)
+        # pyautogui.hotkey('ctrl', 'shift', 'E')
+
+
         FindAndClick(r"Media\renameClick.PNG",retries=0,timeoutSec=10, conf=0.7, delay=0.1)
 
         pyautogui.hotkey('ctrl', 'a')
